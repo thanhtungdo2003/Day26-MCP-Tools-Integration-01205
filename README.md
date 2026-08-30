@@ -18,13 +18,17 @@ day26-mcp/
 │   ├── weather_server.py
 │   └── weather_client.py
 │
-└── 03-production/           ← Bước 3: Auth, Tool Registry, Versioning
-    ├── README.md
-    ├── auth_server.py
-    ├── auth_client.py
-    ├── registry.json
-    ├── registry_client.py
-    └── versioned_server.py
+├── 03-production/           ← Bước 3: Auth, Tool Registry, Versioning
+│   ├── README.md
+│   ├── auth_server.py
+│   ├── auth_client.py
+│   ├── registry.json
+│   ├── registry_client.py
+│   └── versioned_server.py
+│
+└── 04-lab/                  ← Lab hoàn chỉnh: ADK + HTTP MCP + WeatherAPI
+    ├── mcp-client/
+    └── mcp-server/
 ```
 
 ## Quick start
@@ -36,9 +40,11 @@ pip install -r requirements.txt
 # MCP demo (không cần API key)
 cd 02-mcp-basics && python weather_client.py
 
+# Tạo cấu hình local, sau đó điền các API key cần thiết
+cp .env.example .env
+
 # Function Calling (cần Gemini API key)
-export GEMINI_API_KEY=...
-cd 01-function-calling && python weather_function_calling.py
+python 01-function-calling/weather_function_calling.py
 
 # Production — Auth (2 terminal)
 cd 03-production
@@ -47,6 +53,8 @@ python auth_client.py              # terminal 2
 
 # Production — Tool Registry
 cd 03-production && python registry_client.py
+
+# Lab ADK + MCP hoàn chỉnh: xem 04-lab/README.md
 ```
 
 ---

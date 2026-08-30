@@ -14,10 +14,11 @@ RUN pip install --no-cache-dir -e .
 COPY weather.py ./
 
 # Expose port (Cloud Run will override this)
-EXPOSE 8080
+EXPOSE 8085
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8085
 
 # Run the application
 CMD ["python", "weather.py"]

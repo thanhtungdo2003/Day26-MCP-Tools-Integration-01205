@@ -56,8 +56,7 @@ So với bài 02 (viết client thủ công bằng `mcp.ClientSession`), ADK gi�
 cd mcp-server
 uv sync
 
-# Set your WeatherAPI key (get one free at https://weatherapi.com)
-export WEATHERAPI_KEY="your_weatherapi_key"
+# Add WEATHERAPI_KEY to the repository-root .env first
 
 # Start the server (runs on port 8085 by default)
 uv run python weather.py
@@ -71,8 +70,7 @@ The server will be available at `http://localhost:8085/mcp`.
 cd mcp-client
 uv sync
 
-# Create .env file with your Gemini API key
-echo "GOOGLE_API_KEY=your_gemini_api_key" > .env
+# The agent reads GOOGLE_API_KEY from the repository-root .env
 
 # Start ADK web interface
 uv run adk web
@@ -84,6 +82,7 @@ Open http://localhost:8000 in your browser, select `weather_agent`, and ask abou
 
 | Variable | Where | Description |
 |----------|-------|-------------|
-| `WEATHERAPI_KEY` | mcp-server | API key from weatherapi.com |
-| `GOOGLE_API_KEY` | mcp-client/.env | Gemini API key |
-| `PORT` | mcp-server (env) | Override server port (default: 8085) |
+| `WEATHERAPI_KEY` | root `.env` or `mcp-server/.env` | API key from weatherapi.com |
+| `GOOGLE_API_KEY` | root `.env` or `mcp-client/.env` | Gemini API key |
+| `MCP_SERVER_URL` | optional | MCP endpoint (default: `http://localhost:8085/mcp`) |
+| `PORT` | optional | Override server port (default: 8085) |

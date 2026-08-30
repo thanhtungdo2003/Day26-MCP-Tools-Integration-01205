@@ -3,7 +3,9 @@ __pycache__/
 *.pyc
 venv/
 .env
+!.env.example
 **/.venv
 .adk/
+.ai-log/
 *.db
 **/.DS_Store

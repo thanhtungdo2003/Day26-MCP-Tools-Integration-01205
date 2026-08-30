@@ -87,9 +87,10 @@ async def connect_and_call(match: dict, tool_args: dict) -> str:
     tool_name = match["tool"]
 
     if server.get("transport") == "stdio":
+        args = [str((REGISTRY_PATH.parent / arg).resolve()) for arg in server["args"]]
         params = StdioServerParameters(
             command=sys.executable,
-            args=server["args"],
+            args=args,
         )
         async with stdio_client(params) as (read, write):
             async with ClientSession(read, write) as session:

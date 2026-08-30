@@ -7,19 +7,23 @@ import os
 import sys
 from pathlib import Path
 
+CLIENT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 def check_environment():
     """Check if .env file exists and is configured"""
     print("🔍 Checking environment configuration...")
     
-    env_file = Path(".env")
-    if not env_file.exists():
-        print("❌ .env file not found")
-        print("   Run: echo 'GOOGLE_API_KEY=your_key' > .env")
+    env_files = [CLIENT_DIR / ".env", PROJECT_ROOT / ".env"]
+    env_file = next((path for path in env_files if path.exists()), None)
+    if env_file is None:
+        print("❌ .env file not found in the client or repository root")
+        print("   Copy .env.example to .env and add GOOGLE_API_KEY")
         return False
     
     # Check if GOOGLE_API_KEY is set
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(env_file)
     
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key or api_key == "your_google_api_key_here":
@@ -27,7 +31,7 @@ def check_environment():
         print("   Get key from: https://aistudio.google.com/apikey")
         return False
     
-    print(f"✅ GOOGLE_API_KEY configured ({api_key[:10]}...)")
+    print(f"✅ GOOGLE_API_KEY configured via {env_file}")
     return True
 
 def check_dependencies():
@@ -36,7 +40,7 @@ def check_dependencies():
     
     required_packages = [
         ("google.adk", "Google ADK"),
-        ("google.generativeai", "Google Generative AI"),
+        ("google.genai", "Google GenAI"),
         ("mcp", "MCP"),
         ("fastmcp", "FastMCP"),
         ("dotenv", "python-dotenv"),
@@ -69,7 +73,7 @@ def check_agent_structure():
     
     all_exist = True
     for file_path in required_files:
-        path = Path(file_path)
+        path = CLIENT_DIR / file_path
         if path.exists():
             print(f"✅ {file_path}")
         else:
@@ -82,7 +86,7 @@ def check_mcp_server():
     """Check if MCP server is accessible"""
     print("\n🔍 Checking MCP server connectivity...")
     
-    server_url = "https://weather-mcp-server-oze7nwnjba-as.a.run.app"
+    server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8085/mcp")
     
     try:
         import httpx
@@ -90,12 +94,12 @@ def check_mcp_server():
         
         async def test_connection():
             async with httpx.AsyncClient() as client:
-                response = await client.get(server_url, timeout=10.0)
+                response = await client.get(server_url, timeout=5.0)
                 return response.status_code
         
         status_code = asyncio.run(test_connection())
         
-        if status_code in [200, 404]:  # 404 is expected for GET on MCP endpoint
+        if status_code in [200, 400, 405, 406]:
             print(f"✅ MCP server reachable at {server_url}")
             return True
         else:
@@ -142,8 +146,7 @@ def main():
     if all(checks):
         print("✅ All checks passed!")
         print("\n🚀 Ready to start!")
-        print("   Run: ./start_agent.sh")
-        print("   Or:  uv run adk web")
+        print("   Run: uv run adk web")
         print("\n📍 Then open: http://localhost:8000")
         return 0
     else:
@@ -153,4 +156,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

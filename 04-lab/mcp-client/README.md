@@ -40,7 +40,7 @@ AI agent built with **Google Agent Development Kit (ADK)** that uses tools from 
 
 ```bash
 cd ../mcp-server
-export WEATHERAPI_KEY="your_weatherapi_key"
+# Add WEATHERAPI_KEY to the repository-root .env first
 uv run python weather.py
 ```
 
@@ -49,9 +49,8 @@ uv run python weather.py
 ```bash
 cd mcp-client
 
-# Create .env file with your Google API key
-# Get free key from: https://aistudio.google.com/apikey
-echo "GOOGLE_API_KEY=your_google_api_key_here" > .env
+# The client reads GOOGLE_API_KEY from the repository-root .env.
+# A local mcp-client/.env can override it when needed.
 ```
 
 ### 3. Install Dependencies
@@ -123,16 +122,13 @@ root_agent = Agent(
 3. **Timeout errors**: Server not started
    - Start the MCP server first, then the ADK client
 
-### Fallback Mode
-
-If MCP connection fails, the agent runs in fallback mode without tools.
-Fix the connection and restart ADK web.
-
 ## Environment Variables
 
-Create `.env` file:
+Create the repository-root `.env` from `.env.example`:
 ```bash
 GOOGLE_API_KEY=your_gemini_api_key
+WEATHERAPI_KEY=your_weatherapi_key
+MCP_SERVER_URL=http://localhost:8085/mcp
 ```
 
 ## Resources

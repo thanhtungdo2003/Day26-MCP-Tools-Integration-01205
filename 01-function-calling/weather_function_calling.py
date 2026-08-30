@@ -5,13 +5,17 @@ chính file app này. Model chỉ QUYẾT ĐỊNH gọi tool nào; app mới là
 
 Cách chạy:
     pip install -r ../requirements.txt
-    export GEMINI_API_KEY=...
+    export GOOGLE_API_KEY=...
     python weather_function_calling.py
 """
 
-from google import genai
-from google.genai import types
+from pathlib import Path
 
+from dotenv import load_dotenv
+from google import genai
+from google.genai import errors, types
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 client = genai.Client()
 
 MODEL = "gemini-2.5-flash"
@@ -120,4 +124,10 @@ def run(prompt: str) -> str:
 if __name__ == "__main__":
     question = "Thời tiết Hà Nội và Đà Nẵng hôm nay thế nào?"
     print(f"User: {question}\n")
-    print("Trả lời:", run(question))
+    try:
+        print("Trả lời:", run(question))
+    except errors.APIError as exc:
+        raise SystemExit(
+            "Gemini request failed. Check that GOOGLE_API_KEY is valid, "
+            "enabled for the Gemini API, and allows this machine's IP address."
+        ) from exc
